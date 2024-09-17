@@ -9,7 +9,7 @@ CREATE TYPE "otus_shop"."order_status" AS ENUM (
 
 CREATE TABLE "otus_shop"."posts" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" numeric NOT NULL,
+  "user_id" numeric,
   "tag" text,
   "content" text NOT NULL,
   "created_at" datetime,
@@ -39,8 +39,8 @@ CREATE TABLE "otus_shop"."likes" (
 
 CREATE TABLE "otus_shop"."comments" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" numeric,
-  "post_id" numeric,
+  "user_id" numeric NOT NULL,
+  "post_id" numeric NOT NULL,
   "content" text NOT NULL,
   "created_at" datetime,
   "likes_count" numeric
@@ -61,15 +61,15 @@ CREATE TABLE "otus_shop"."product_category" (
 
 CREATE TABLE "otus_shop"."orders" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" numeric,
+  "user_id" numeric NOT NULL,
   "created_at" datetime,
   "status" order_status,
   "price" decimal
 );
 
 CREATE TABLE "otus_shop"."orders_products" (
-  "order_id" numeric,
-  "product_id" numeric,
+  "order_id" numeric NOT NULL,
+  "product_id" numeric NOT NULL,
   PRIMARY KEY ("order_id", "product_id")
 );
 
@@ -79,11 +79,13 @@ CREATE TABLE "otus_shop"."users_roles" (
   PRIMARY KEY ("user_id", "role_id")
 );
 
-CREATE INDEX "POST_LIKES_IDX" ON "otus_shop"."likes" ("post_id");
+CREATE INDEX "LIKES_POST_LIKES_IDX" ON "otus_shop"."likes" ("post_id");
 
-CREATE INDEX "COMMENT_LIKES_IDX" ON "otus_shop"."likes" ("comment_id");
+CREATE INDEX "LIKES_COMMENT_LIKES_IDX" ON "otus_shop"."likes" ("comment_id");
 
-CREATE INDEX "PRODUCT_CATEGORY_IDX" ON "otus_shop"."products" ("product_category");
+CREATE INDEX "PRODUCTS_PRODUCT_NAME_IDX" ON "otus_shop"."products" ("name");
+
+CREATE INDEX "ORDERS_USER_ID_IDX" ON "otus_shop"."orders" ("user_id");
 
 COMMENT ON TABLE "otus_shop"."posts" IS 'Таблица "Публикация"';
 
